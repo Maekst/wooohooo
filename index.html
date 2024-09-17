@@ -83,11 +83,19 @@
 
         /* Media Queries for Mobile Devices */
         @media (max-width: 768px) {
+            select {
+                font-size: 1.2em; /* Larger font size for better readability on mobile */
+                padding: 10px; /* Add padding for a better touch experience */
+            }
             .image-container img {
                 width: 80%; /* Adjust image width on smaller screens */
             }
         }
         @media (max-width: 480px) {
+            select {
+                font-size: 1.5em; /* Even larger font size on very small screens */
+                padding: 15px; /* Increase padding for touch interactions */
+            }
             .image-container img {
                 width: 100%; /* Full width on very small screens */
             }
@@ -119,12 +127,10 @@
     <!-- Dropdown for Car Year -->
     <div>
         <label for="year">Year:</label>
-        <select id="year" disabled>
+        <select id="year" disabled onchange="showCarParts()">
             <option value="">--Select Year--</option>
         </select>
     </div>
-
-    <button onclick="showCarParts()">Show Parts</button>
 
     <!-- Section to Display Car Parts Images -->
     <div class="image-display" id="image-display">
