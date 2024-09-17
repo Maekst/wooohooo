@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Parts Selector</title>
+    <style>
+        body {
+            font-family: 'Gill Sans MT', sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .image-display {
+            margin-top: 20px;
+            display: none;
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+            overflow: hidden; /* Hide overflow to ensure scaling effect is contained */
+        }
+        .image-container img {
+            width: 200px;
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: transform 0.6s ease, box-shadow 0.1s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.5);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        .text-overlay {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 150%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.1s;
+            pointer-events: none; /* Prevent overlay from interfering with click events */
+        }
+        .image-container:hover .text-overlay {
+            visibility: visible;
+            opacity: 1;
+        }
+        .image-container img.selected {
+            border-color: orange;
+        }
+        .purchase-suggestion {
+            margin-top: 20px;
+            display: none;
+            font-size: 1.2em;
+            color: green;
+        }
+        .purchase-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .purchase-button:hover {
+            background-color: #218838;
+        }
+        select:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select Make, Model, and Year to View Compatible Parts</h1>
+
+    <!-- Dropdown for Car Make -->
+    <div>
+        <label for="make">Make:</label>
+        <select id="make" onchange="populateModels()" disabled>
+            <option value="">--Select Make--</option>
+        </select>
+    </div>
+
+    <!-- Dropdown for Car Model -->
+    <div>
+        <label for="model">Model:</label>
+        <select id="model" disabled onchange="enableYearDropdown()">
+            <option value="">--Select Model--</option>
+        </select>
+    </div>
+
+    <!-- Dropdown for Car Year -->
+    <div>
+        <label for="year">Year:</label>
+        <select id="year" disabled>
+            <option value="">--Select Year--</option>
+        </select>
+    </div>
+
+    <button onclick="showCarParts()">Show Parts</button>
+
+    <!-- Section to Display Car Parts Images -->
+    <div class="image-display" id="image-display">
+        <h2>Compatible Parts:</h2>
+        <div id="image-container"></div>
+    </div>
+
+    <!-- Purchase Suggestion Section -->
+    <div class="purchase-suggestion" id="purchase-suggestion">
+        <p>You have selected part number: <span id="selected-part-number"></span></p>
+        <button class="purchase-button" onclick="suggestPurchase()">Add to Cart</button>
+    </div>
+
+    <script>
+        let carData = [];
+        let partsData = {};
+
+        // URL to fetch the CSV file from
+        const csvUrl = 'https://cdn.shopify.com/s/files/1/0254/7675/9597/files/Data_for_RG_Original.csv?v=1726595271'; // Replace with your actual CSV file URL
+
+        // Function to load the CSV file from the URL
+        function loadCSVFromURL() {
+            fetch(csvUrl)
+                .then(response => response.text())
+                .then(csvData => parseCSV(csvData))
+                .catch(error => {
+                    console.error('Error fetching the CSV file:', error);
+                    alert('Failed to load CSV file from the URL.');
+                });
+        }
+
+        // Simple CSV parser function
+        function parseCSV(data) {
+            const lines = data.trim().split('\n');
+            const headers = lines[0].split(',');
+
+            carData = [];
+            partsData = {};
+
+            lines.slice(1).forEach(line => {
+                const row = line.split(',');
+                if (row.length === headers.length) {
+                    const make = row[0].trim();
+                    const model = row[1].trim();
+                    const year = row[2].trim();
+                    const imageUrl = row[3].trim();
+                    const partNumber = row[4].trim(); // New PartNumber field
+
+                    carData.push({ make, model, year });
+
+                    const key = `${make}_${model}_${year}`;
+                    if (!partsData[key]) {
+                        partsData[key] = [];
+                    }
+                    partsData[key].push({ imageUrl, partNumber });
+                }
+            });
+
+            populateMakes(); // Populate the make dropdown
+        }
+
+        // Function to populate the 'Make' dropdown based on CSV data
+        function populateMakes() {
+            const makeSelect = document.getElementById('make');
+            makeSelect.innerHTML = '<option value="">--Select Make--</option>';
+            const makes = [...new Set(carData.map(car => car.make))]; // Get unique makes
+
+            makes.forEach(make => {
+                const option = document.createElement('option');
+                option.value = make;
+                option.text = make;
+                makeSelect.appendChild(option);
+            });
+
+            makeSelect.disabled = false; // Enable the make dropdown
+        }
+
+        // Function to populate the 'Model' dropdown based on selected Make
+        function populateModels() {
+            const make = document.getElementById('make').value;
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">--Select Model--</option>';
+            document.getElementById('year').disabled = true; // Disable Year initially
+
+            const models = [...new Set(carData.filter(car => car.make === make).map(car => car.model))];
+
+            models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.text = model;
+                modelSelect.appendChild(option);
+            });
+
+            modelSelect.disabled = false; // Enable the model dropdown
+        }
+
+        // Function to enable the 'Year' dropdown when a 'Model' is selected
+        function enableYearDropdown() {
+            const make = document.getElementById('make').value;
+            const model = document.getElementById('model').value;
+            const yearSelect = document.getElementById('year');
+            yearSelect.innerHTML = '<option value="">--Select Year--</option>';
+
+            const years = [...new Set(carData.filter(car => car.make === make && car.model === model).map(car => car.year))];
+
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.text = year;
+                yearSelect.appendChild(option);
+            });
+
+            yearSelect.disabled = false; // Enable the year dropdown
+        }
+
+        // Function to display car parts images when Make, Model, and Year are selected
+        function showCarParts() {
+            const make = document.getElementById('make').value;
+            const model = document.getElementById('model').value;
+            const year = document.getElementById('year').value;
+            const key = `${make}_${model}_${year}`;
+
+            const imageContainer = document.getElementById('image-container');
+            imageContainer.innerHTML = ''; // Clear the container
+
+            if (partsData[key]) {
+                partsData[key].forEach(part => {
+                    const container = document.createElement('div');
+                    container.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = part.imageUrl;
+                    img.dataset.partNumber = part.partNumber; // Store the part number in data attribute
+                    img.onclick = () => selectPart(img);
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'text-overlay';
+                    overlay.innerText = `Part Number: ${part.partNumber}`;
+
+                    container.appendChild(img);
+                    container.appendChild(overlay);
+                    imageContainer.appendChild(container);
+                });
+                document.getElementById('image-display').style.display = 'block'; // Show image section
+            } else {
+                alert('No parts found for the selected make, model, and year.');
+                document.getElementById('image-display').style.display = 'none'; // Hide image section
+            }
+        }
+
+        // Function to select a part and display part number
+        function selectPart(imgElement) {
+            const images = document.querySelectorAll('.image-container img');
+            images.forEach(img => img.classList.remove('selected')); // Remove selected class from all images
+            imgElement.classList.add('selected'); // Add selected class to the clicked image
+
+            const partNumber = imgElement.dataset.partNumber;
+            document.getElementById('selected-part-number').innerText = partNumber;
+            document.getElementById('purchase-suggestion').style.display = 'block'; // Show purchase suggestion
+        }
+
+        // Function to suggest purchasing a part
+        function suggestPurchase() {
+            const partNumber = document.getElementById('selected-part-number').innerText;
+            alert('You selected part number: ' + partNumber);
+        }
+
+        // Load CSV data when the page loads
+        window.onload = function () {
+            loadCSVFromURL();
+        };
+    </script>
+</body>
+</html>
