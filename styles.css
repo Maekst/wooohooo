@@ -37,15 +37,15 @@ body {
 
 /* Wheel image */
 .wheel img {
-    width: 200px;
-    height: 200px;
+    width: 100%; /* Scale with the container */
+    height: auto; /* Maintain aspect ratio */
     object-fit: cover;
     transition: transform 0.5s ease;
     border-radius: 20px;
 }
 
 .wheel img:hover {
-    transform: scale(1.2);
+    transform: scale(1.2); /* Scale effect on hover */
 }
 
 /* Adjustments for mobile devices */
@@ -56,8 +56,8 @@ body {
     }
 
     .wheel img {
-        width: 100%; /* Image should also be responsive */
-        height: auto;
+        width: 100%; /* Image scales with container */
+        height: auto; /* Maintain aspect ratio */
         border-radius: 20px;
     }
 }
