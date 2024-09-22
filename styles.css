@@ -47,7 +47,7 @@ body {
 }
 
 .wheel img:hover {
-    transform: scale(1.2); /* Scale effect on hover */
+    transform: scale(1.0); /* Scale effect on hover */
 }
 
 /* Adjustments for mobile devices */
