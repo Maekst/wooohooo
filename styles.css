@@ -57,10 +57,11 @@ body {
     }
 
     .wheel {
-        width: fit-content; /* Let the container's width fit the image */
+        width: fit-content; /* Adjust to the content size */
         max-width: 100vw; /* Ensure it doesn't exceed the viewport width */
         margin: 0 auto; /* Center the wheel on the page */
         border-radius: 0; /* Remove border radius for full-width effect */
+        padding: 10px; /* Optional padding for spacing */
     }
 
     .wheel img {
