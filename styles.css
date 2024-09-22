@@ -30,14 +30,16 @@ body {
     display: inline-block;
     font-size: 10px;
     width: 100%; /* Full width */
+    max-width: 100%; /* Prevent overflow */
     text-align: center;
     background-color: white;
     border-radius: 20px;
+    box-sizing: border-box; /* Include padding in the width */
 }
 
 /* Wheel image */
 .wheel img {
-    width: 100%; /* Scale with the container */
+    width: 100%; /* Full width */
     height: auto; /* Maintain aspect ratio */
     object-fit: cover;
     transition: transform 0.5s ease;
@@ -50,15 +52,20 @@ body {
 
 /* Adjustments for mobile devices */
 @media (max-width: 600px) {
+    body {
+        margin: 0; /* Remove body margin on mobile */
+    }
+
     .wheel {
-        width: 100%; /* Full width on mobile devices */
-        margin: 10px 0; /* Adjust margin to remove side spaces */
+        width: 100vw; /* Full viewport width */
+        margin: 0; /* Remove margin */
+        border-radius: 0; /* Remove border radius for full-width effect */
     }
 
     .wheel img {
-        width: 100%; /* Image scales with container */
+        width: 100vw; /* Full viewport width */
         height: auto; /* Maintain aspect ratio */
-        border-radius: 20px;
+        border-radius: 0; /* No border radius on mobile */
     }
 }
 
