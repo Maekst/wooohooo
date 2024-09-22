@@ -29,7 +29,7 @@ body {
     margin: 10px;
     display: inline-block;
     font-size: 10px;
-    width: 100%;
+    width: 100%; /* Full width */
     text-align: center;
     background-color: white;
     border-radius: 20px;
@@ -46,6 +46,20 @@ body {
 
 .wheel img:hover {
     transform: scale(1.2);
+}
+
+/* Adjustments for mobile devices */
+@media (max-width: 600px) {
+    .wheel {
+        width: 100%; /* Full width on mobile devices */
+        margin: 10px 0; /* Adjust margin to remove side spaces */
+    }
+
+    .wheel img {
+        width: 100%; /* Image should also be responsive */
+        height: auto;
+        border-radius: 20px;
+    }
 }
 
 /* Filter button styling */
