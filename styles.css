@@ -57,8 +57,9 @@ body {
     }
 
     .wheel {
-        width: 100vw; /* Full viewport width on mobile */
-        margin: 0; /* Remove margin */
+        width: fit-content; /* Let the container's width fit the image */
+        max-width: 100vw; /* Ensure it doesn't exceed the viewport width */
+        margin: 0 auto; /* Center the wheel on the page */
         border-radius: 0; /* Remove border radius for full-width effect */
     }
 
