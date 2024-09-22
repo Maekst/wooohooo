@@ -29,7 +29,7 @@ body {
     margin: 10px;
     display: inline-block;
     font-size: 10px;
-    width: auto;
+    width: 100%;
     text-align: center;
     background-color: white;
     border-radius: 20px;
