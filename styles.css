@@ -63,7 +63,7 @@ body {
     }
 
     .wheel img {
-        width: 100vw; /* Full viewport width */
+        width: auto; /* Full viewport width */
         height: auto; /* Maintain aspect ratio */
         border-radius: 0; /* No border radius on mobile */
     }
