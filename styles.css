@@ -81,8 +81,8 @@ body {
     }
 
     .wheel img {
-        width: 300px; /* Match container width */
-        height: 300px; /* Set fixed height for consistency */
+        width: 298px; /* Match container width */
+        height: 298px; /* Set fixed height for consistency */
         border-radius: 20px; /* Rounded corners on desktop */
     }
 }
