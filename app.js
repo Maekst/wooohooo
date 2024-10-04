@@ -11,15 +11,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch all wheels from Airtable
     async function fetchAllWheels() {
-        const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
-        const response = await fetch(url, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.records;
+    const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+
+    // Filter out wheels where 'Compatible' is 'no'
+    const filteredWheels = data.records.filter(wheel => wheel.fields['Compatible'] === 'yes');
+    return filteredWheels;
     }
 
     // Display wheels on the page
