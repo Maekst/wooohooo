@@ -75,7 +75,7 @@ body {
 /* Adjustments for desktop (larger than 600px) */
 @media (min-width: 600px) {
     .wheel {
-        width: 250px; /* Set a fixed width for desktop */
+        width: 300px; /* Set a fixed width for desktop */
         margin: 20px; /* Add margin for spacing */
         border-radius: 20px; /* Rounded corners on desktop */
     }
