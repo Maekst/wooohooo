@@ -66,7 +66,7 @@ body {
     }
 
     .wheel img {
-        width: calc(100vw - 20px); /* Prevent scrollbar issues by subtracting some pixels */
+        width: calc(100vw - 22px); /* Prevent scrollbar issues by subtracting some pixels */
         height: auto; /* Maintain aspect ratio */
         border-radius: 0; /* No border radius on mobile */
     }
